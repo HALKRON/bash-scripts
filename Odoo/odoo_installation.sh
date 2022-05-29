@@ -110,6 +110,6 @@ fi
 sudo systemctl restart nginx
 
 echo "" >> /etc/odoo15.conf
-echo "proxy_mode = True"
+echo "proxy_mode = True" | sudo tee -a /etc/odoo15.conf
 
 sudo systemctl restart odoo15
