@@ -20,9 +20,9 @@ sudo su - postgres -c "createuser -s odoo15"
 # Installs Wkhtmltopdf which converts HTML to PDF
 sudo wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.focal_amd64.deb
 
-sudo apt install ./wkhtmltox_0.12.6-1.focal_amd64.deb
+sudo apt install ./wkhtmltox_0.12.6-1.focal_amd64.deb -y
 
-sudo rm -f ./wkhtmltox_0.12.6-1.focal_amd64.deb -y
+sudo rm -f ./wkhtmltox_0.12.6-1.focal_amd64.deb
 
 sudo -u odoo15 bash << EOF
 git clone https://www.github.com/odoo/odoo --depth 1 --branch 15.0 /opt/odoo15/odoo
@@ -36,17 +36,19 @@ mkdir /opt/odoo15/odoo-custom-addons
 exit
 EOF
 
-odoo_conf=/etc/odoo15.conf
+INSTALL_PATH=`pwd`
 
-read -p "Choose your admin password to the database: " -r admin_passwd
-read -p "Choose the database you wish to connect to: " -r database_name
+ODOO_CONF=/etc/odoo15.conf
 
-sudo mv files/odoo15.conf $odoo_conf
+read -p "Choose your admin password to the database: " -r ADMIN_PASSWD
+read -p "Choose the database you wish to connect to: " -r DATABASE_NAME
 
-sudo sed "s/password/${admin_passwd}/g" -i $odoo_conf
-sudo sed "s/database_name/${database_name}/g" -i $odoo_conf
+sudo mv "${INSTALL_PATH}"/files/odoo15.conf $ODOO_CONF
 
-sudo mv files/odoo15.service /etc/systemd/system/odoo15.service
+sudo sed "s/password/${ADMIN_PASSWD}/g" -i $ODOO_CONF
+sudo sed "s/DATABASE_NAME/${DATABASE_NAME}/g" -i $ODOO_CONF
+
+sudo mv "${INSTALL_PATH}"/files/odoo15.service /etc/systemd/system/odoo15.service
 
 sudo systemctl daemon-reload
 
@@ -61,46 +63,46 @@ sudo mkdir -p /var/lib/letsencrypt/.well-known
 sudo chgrp www-data /var/lib/letsencrypt
 sudo chmod g+s /var/lib/letsencrypt
 
-sudo mv files/letsencrypt.conf /etc/nginx/snippets/letsencrypt.conf
+sudo mv "${INSTALL_PATH}"/files/letsencrypt.conf /etc/nginx/snippets/letsencrypt.conf
 
-read -p "Enter your website domain: " -r website_domain
-read -p "Do you have www as subdomain for this? (Y/N)[N] " -r www_website
+read -p "Enter your website domain: " -r WEBSITE_DOMAIN
+read -p "Do you have www as subdomain for this? (Y/N)[N] " -r WWW_WEBSITE
 
-case $www_website in
+case $WWW_WEBSITE in
     Yes|yes|Y|y )
-        www_website=true;
+        WWW_WEBSITE=true;
     ;;
     * )
-        www_website=false;
+        WWW_WEBSITE=false;
     ;;
 esac
 
-sudo mkdir -p /etc/nginx/sites-available/ && sudo cp -f ./files/sites-avail-1 /etc/nginx/sites-available/"${website_domain}"
+sudo mkdir -p /etc/nginx/sites-available/ && sudo cp -f "${INSTALL_PATH}"/files/sites-avail-1 /etc/nginx/sites-available/"${WEBSITE_DOMAIN}"
 
-if [[ $www_website == false ]] ; then
-    sudo sed "s/ www.YOURWEBSITE.COM//g;s/YOURWEBSITE.COM/${website_domain}/g" -i /etc/nginx/sites-available/"$website_domain"
+if [[ $WWW_WEBSITE == false ]] ; then
+    sudo sed "s/ www.YOURWEBSITE.COM//g;s/YOURWEBSITE.COM/${WEBSITE_DOMAIN}/g" -i /etc/nginx/sites-available/"$WEBSITE_DOMAIN"
 else
-    sudo sed "s/YOURWEBSITE.COM/${website_domain}/g" -i /etc/nginx/sites-available/"$website_domain"
+    sudo sed "s/YOURWEBSITE.COM/${WEBSITE_DOMAIN}/g" -i /etc/nginx/sites-available/"$WEBSITE_DOMAIN"
 fi
 
-sudo ln -s /etc/nginx/sites-available/"${website_domain}" /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/"${WEBSITE_DOMAIN}" /etc/nginx/sites-enabled/
 
 sudo systemctl restart nginx
 
-read -p "Enter your email" -r email
+read -p "Enter your email" -r YOUR_EMAIL
 
-if $www_website ; then
-    sudo certbot certonly --agree-tos --email "$email" --webroot -w /var/lib/letsencrypt/ -d "$website_domain" -d "$website_domain"
+if $WWW_WEBSITE ; then
+    sudo certbot certonly --agree-tos --email "$YOUR_EMAIL" --webroot -w /var/lib/letsencrypt/ -d "$WEBSITE_DOMAIN" -d "$WEBSITE_DOMAIN"
 else
-    sudo certbot certonly --agree-tos --email "$email" --webroot -w /var/lib/letsencrypt/ -d "$website_domain"
+    sudo certbot certonly --agree-tos --email "$YOUR_EMAIL" --webroot -w /var/lib/letsencrypt/ -d "$WEBSITE_DOMAIN"
 fi
 
 echo ' --renew-hook "systemctl reload nginx"' | sudo tee -a /etc/cron.d/certbot
 
-if $www_website ; then
-    sudo cp -f ./files/sites-avail-2-www.conf /etc/nginx/sites-available/"${website_domain}" && sudo sed "s/YOURWEBSITE.COM/${website_domain}/g" -i /etc/nginx/sites-available/"${website_domain}"
+if $WWW_WEBSITE ; then
+    sudo cp -f "${INSTALL_PATH}"/files/sites-avail-2-www.conf /etc/nginx/sites-available/"${WEBSITE_DOMAIN}" && sudo sed "s/YOURWEBSITE.COM/${WEBSITE_DOMAIN}/g" -i /etc/nginx/sites-available/"${WEBSITE_DOMAIN}"
 else
-    sudo cp -f ./files/sites-avail-2.conf /etc/nginx/sites-available/"${website_domain}" && sudo sed "s/YOURWEBSITE.COM/${website_domain}/g" -i /etc/nginx/sites-available/"${website_domain}"
+    sudo cp -f "${INSTALL_PATH}"/files/sites-avail-2.conf /etc/nginx/sites-available/"${WEBSITE_DOMAIN}" && sudo sed "s/YOURWEBSITE.COM/${WEBSITE_DOMAIN}/g" -i /etc/nginx/sites-available/"${WEBSITE_DOMAIN}"
 fi
 
 sudo systemctl restart nginx
