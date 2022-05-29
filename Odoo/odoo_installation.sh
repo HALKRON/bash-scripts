@@ -65,6 +65,8 @@ sudo chmod g+s /var/lib/letsencrypt
 
 sudo cp -f "${INSTALL_DIR}"/files/letsencrypt.conf /etc/nginx/snippets/letsencrypt.conf
 
+sudo cp -f "${INSTALL_DIR}"/files/ssl.conf /etc/nginx/snippets/ssl.conf
+
 read -p "Enter your website domain: " -r WEBSITE_DOMAIN
 read -p "Do you have www as subdomain for this? (Y/N)[N] " -r WWW_WEBSITE
 
@@ -89,7 +91,7 @@ sudo ln -s /etc/nginx/sites-available/"${WEBSITE_DOMAIN}" /etc/nginx/sites-enabl
 
 sudo systemctl restart nginx
 
-read -p "Enter your email" -r YOUR_EMAIL
+read -p "Enter your Email: " -r YOUR_EMAIL
 
 if $WWW_WEBSITE ; then
     sudo certbot certonly --agree-tos --email "$YOUR_EMAIL" --webroot -w /var/lib/letsencrypt/ -d "$WEBSITE_DOMAIN" -d "$WEBSITE_DOMAIN"
