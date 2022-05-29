@@ -77,7 +77,7 @@ case $WWW_WEBSITE in
     ;;
 esac
 
-sudo mkdir -p /etc/nginx/sites-available/ && sudo cp -f "${INSTALL_DIR}"/files/sites-avail-1 /etc/nginx/sites-available/"${WEBSITE_DOMAIN}"
+sudo mkdir -p /etc/nginx/sites-available/ && sudo cp -f "${INSTALL_DIR}"/files/sites-avail-1.conf /etc/nginx/sites-available/"${WEBSITE_DOMAIN}"
 
 if [[ $WWW_WEBSITE == false ]] ; then
     sudo sed "s/ www.YOURWEBSITE.COM//g;s/YOURWEBSITE.COM/${WEBSITE_DOMAIN}/g" -i /etc/nginx/sites-available/"$WEBSITE_DOMAIN"
