@@ -43,12 +43,12 @@ ODOO_CONF=/etc/odoo15.conf
 read -p "Choose your admin password to the database: " -r ADMIN_PASSWD
 read -p "Choose the database you wish to connect to: " -r DATABASE_NAME
 
-sudo cp "${INSTALL_DIR}"/files/odoo15.conf $ODOO_CONF
+sudo cp -f "${INSTALL_DIR}"/files/odoo15.conf $ODOO_CONF
 
 sudo sed "s/password/${ADMIN_PASSWD}/g" -i $ODOO_CONF
 sudo sed "s/DATABASE_NAME/${DATABASE_NAME}/g" -i $ODOO_CONF
 
-sudo cp "${INSTALL_DIR}"/files/odoo15.service /etc/systemd/system/odoo15.service
+sudo cp -f "${INSTALL_DIR}"/files/odoo15.service /etc/systemd/system/odoo15.service
 
 sudo systemctl daemon-reload
 
@@ -63,7 +63,7 @@ sudo mkdir -p /var/lib/letsencrypt/.well-known
 sudo chgrp www-data /var/lib/letsencrypt
 sudo chmod g+s /var/lib/letsencrypt
 
-sudo mv "${INSTALL_DIR}"/files/letsencrypt.conf /etc/nginx/snippets/letsencrypt.conf
+sudo cp -f "${INSTALL_DIR}"/files/letsencrypt.conf /etc/nginx/snippets/letsencrypt.conf
 
 read -p "Enter your website domain: " -r WEBSITE_DOMAIN
 read -p "Do you have www as subdomain for this? (Y/N)[N] " -r WWW_WEBSITE
