@@ -31,9 +31,6 @@ python3 -m venv odoo-venv
 source odoo-venv/bin/activate
 pip3 install wheel
 pip3 install -r odoo/requirements.txt
-cd /opt/odoo15/odoo
-./odoo-bin
-sleep 30
 deactivate
 mkdir /opt/odoo15/odoo-custom-addons
 exit
@@ -54,16 +51,10 @@ sudo mv files/odoo15.service /etc/systemd/system/odoo15.service
 sudo systemctl daemon-reload
 
 sudo systemctl enable --now odoo15
-sudo systemctl status odoo15
 
-sleep 10
+sudo apt install nginx -y
 
-sudo apt install nginx
-sudo systemctl status nginx
-
-sleep 10
-
-sudo apt install certbot
+sudo apt install certbot -y
 sudo openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
 
 sudo mkdir -p /var/lib/letsencrypt/.well-known
