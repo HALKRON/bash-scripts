@@ -1,5 +1,7 @@
 #! /bin/bash
 
+INSTALL_DIR=`pwd`
+
 sudo apt update && sudo apt full-upgrade -y
 
 sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
@@ -36,19 +38,17 @@ mkdir /opt/odoo15/odoo-custom-addons
 exit
 EOF
 
-INSTALL_PATH=`pwd`
-
 ODOO_CONF=/etc/odoo15.conf
 
 read -p "Choose your admin password to the database: " -r ADMIN_PASSWD
 read -p "Choose the database you wish to connect to: " -r DATABASE_NAME
 
-sudo mv "${INSTALL_PATH}"/files/odoo15.conf $ODOO_CONF
+sudo cp "${INSTALL_DIR}"/files/odoo15.conf $ODOO_CONF
 
 sudo sed "s/password/${ADMIN_PASSWD}/g" -i $ODOO_CONF
 sudo sed "s/DATABASE_NAME/${DATABASE_NAME}/g" -i $ODOO_CONF
 
-sudo mv "${INSTALL_PATH}"/files/odoo15.service /etc/systemd/system/odoo15.service
+sudo cp "${INSTALL_DIR}"/files/odoo15.service /etc/systemd/system/odoo15.service
 
 sudo systemctl daemon-reload
 
@@ -63,7 +63,7 @@ sudo mkdir -p /var/lib/letsencrypt/.well-known
 sudo chgrp www-data /var/lib/letsencrypt
 sudo chmod g+s /var/lib/letsencrypt
 
-sudo mv "${INSTALL_PATH}"/files/letsencrypt.conf /etc/nginx/snippets/letsencrypt.conf
+sudo mv "${INSTALL_DIR}"/files/letsencrypt.conf /etc/nginx/snippets/letsencrypt.conf
 
 read -p "Enter your website domain: " -r WEBSITE_DOMAIN
 read -p "Do you have www as subdomain for this? (Y/N)[N] " -r WWW_WEBSITE
@@ -77,7 +77,7 @@ case $WWW_WEBSITE in
     ;;
 esac
 
-sudo mkdir -p /etc/nginx/sites-available/ && sudo cp -f "${INSTALL_PATH}"/files/sites-avail-1 /etc/nginx/sites-available/"${WEBSITE_DOMAIN}"
+sudo mkdir -p /etc/nginx/sites-available/ && sudo cp -f "${INSTALL_DIR}"/files/sites-avail-1 /etc/nginx/sites-available/"${WEBSITE_DOMAIN}"
 
 if [[ $WWW_WEBSITE == false ]] ; then
     sudo sed "s/ www.YOURWEBSITE.COM//g;s/YOURWEBSITE.COM/${WEBSITE_DOMAIN}/g" -i /etc/nginx/sites-available/"$WEBSITE_DOMAIN"
@@ -100,9 +100,9 @@ fi
 echo ' --renew-hook "systemctl reload nginx"' | sudo tee -a /etc/cron.d/certbot
 
 if $WWW_WEBSITE ; then
-    sudo cp -f "${INSTALL_PATH}"/files/sites-avail-2-www.conf /etc/nginx/sites-available/"${WEBSITE_DOMAIN}" && sudo sed "s/YOURWEBSITE.COM/${WEBSITE_DOMAIN}/g" -i /etc/nginx/sites-available/"${WEBSITE_DOMAIN}"
+    sudo cp -f "${INSTALL_DIR}"/files/sites-avail-2-www.conf /etc/nginx/sites-available/"${WEBSITE_DOMAIN}" && sudo sed "s/YOURWEBSITE.COM/${WEBSITE_DOMAIN}/g" -i /etc/nginx/sites-available/"${WEBSITE_DOMAIN}"
 else
-    sudo cp -f "${INSTALL_PATH}"/files/sites-avail-2.conf /etc/nginx/sites-available/"${WEBSITE_DOMAIN}" && sudo sed "s/YOURWEBSITE.COM/${WEBSITE_DOMAIN}/g" -i /etc/nginx/sites-available/"${WEBSITE_DOMAIN}"
+    sudo cp -f "${INSTALL_DIR}"/files/sites-avail-2.conf /etc/nginx/sites-available/"${WEBSITE_DOMAIN}" && sudo sed "s/YOURWEBSITE.COM/${WEBSITE_DOMAIN}/g" -i /etc/nginx/sites-available/"${WEBSITE_DOMAIN}"
 fi
 
 sudo systemctl restart nginx
