@@ -83,14 +83,14 @@ MYSQL_INPUT
 # Configuring PHP
 printf "\n***Configuring PHP***\n"
 
-cp /etc/php/7.4/fpm/pool.d/www.conf /etc/php/7.4/fpm/pool.d/librenms.conf
+cp -f /etc/php/7.4/fpm/pool.d/www.conf /etc/php/7.4/fpm/pool.d/librenms.conf
 
 sed -i "s/\[www\]/\[librenms\]/g" /etc/php/7.4/fpm/pool.d/librenms.conf
 
 sed -i "s/^user.*/user = librenms/g" /etc/php/7.4/fpm/pool.d/librenms.conf
 sed -i "s/^group.*/group = librenms/g" /etc/php/7.4/fpm/pool.d/librenms.conf
 
-sed -i "s/^listen.*/listen = \/run\/php-fpm-librenms.sock/g" /etc/php/7.4/fpm/pool.d/librenms.conf
+sed -i "s/^listen = .*/listen = \/run\/php-fpm-librenms.sock/g" /etc/php/7.4/fpm/pool.d/librenms.conf
 
 # Configuring Web Server
 printf "\n***Configuring Web Server***\n"
@@ -118,19 +118,19 @@ sleep 10
 
 cp -f "${INSTALL_DIR}"/files/librenms.conf /etc/nginx/conf.d/librenms.conf
 
-sed -i "s/server_name.*/server_name ${INET}/g" /etc/nginx/conf.d/librenms.conf
+sed -i "s/server_name.*/server_name ${INET};/g" /etc/nginx/conf.d/librenms.conf
 
 rm /etc/nginx/sites-enabled/default
 systemctl restart nginx
 systemctl restart php7.4-fpm
 
 ln -s /opt/librenms/lnms /usr/bin/lnms
-cp /opt/librenms/misc/lnms-completion.bash /etc/bash_completion.d/
+cp -f /opt/librenms/misc/lnms-completion.bash /etc/bash_completion.d/
 
 # Configuring SNMP
 printf "\n***Configuring SNMP***\n"
 
-cp /opt/librenms/snmpd.conf.example /etc/snmp/snmpd.conf
+cp -f /opt/librenms/snmpd.conf.example /etc/snmp/snmpd.conf
 
 read -p "Enter your community string: " -r YOUR_SNMP_COMMUNTIY
 
@@ -141,8 +141,4 @@ chmod +x /usr/bin/distro
 systemctl enable snmpd
 systemctl restart snmpd
 
-cp /opt/librenms/librenms.nonroot.cron /etc/cron.d/librenms
-
-cp /opt/librenms/misc/librenms.logrotate /etc/logrotate.d/librenms
-
-chown librenms:librenms /opt/librenms/config.php
+cp -f /opt/librenms/librenms.nonroot.cron /etc/cron.d/librenms
