@@ -18,14 +18,14 @@ ssl_certificate /etc/ssl/certs/nginx-selfsigned.crt;
 ssl_certificate_key /etc/ssl/private/nginx-selfsigned.key;
 EOT
 
-SERVER_NAME=$(grep server_name /etc/nginx/conf.d/librenms.conf)
+SERVER_IP=$(grep server_name /etc/nginx/conf.d/librenms.conf | sed "s/.*server_name\s*//g; s/;//g")
 
 read -p "Enter your DNS servers with space between them: " -r DNS_SERVERS
 
 cp -f "${INSTALL_DIR}"/files/ssl-params.conf /etc/nginx/snippets/ssl-params.conf
 cp -f "${INSTALL_DIR}"/files/librenms_https.conf /etc/nginx/conf.d/librenms.conf
 
-sed -i "s/.*server_name.*/${SERVER_NAME}/g" /etc/nginx/conf.d/librenms.conf
+sed -i "s/SERVER_IP/${SERVER_IP}/g" /etc/nginx/conf.d/librenms.conf
 sed -i "s/DNS/${DNS_SERVERS}/g" /etc/nginx/snippets/ssl-params.conf
 
 systemctl restart nginx
