@@ -8,13 +8,12 @@ fi
 # Initial Installations
 printf "\n***Initial Installations***\n"
 
-Installing PHP dependencies
 apt update && apt full-upgrade -y
 
 apt install software-properties-common
 add-apt-repository universe
 apt update
-apt install acl curl composer fping git graphviz imagemagick mariadb-client mariadb-server mtr-tiny nginx-full nmap php7.4-cli php7.4-curl php7.4-fpm php7.4-gd php7.4-gmp php7.4-json php7.4-mbstring php7.4-mysql php7.4-snmp php7.4-xml php7.4-zip rrdtool snmp snmpd whois unzip python3-pymysql python3-dotenv python3-redis python3-setuptools python3-systemd python3-pip
+apt install acl curl composer fping git graphviz imagemagick mariadb-client mariadb-server mtr-tiny nginx-full nmap php7.4-cli php7.4-curl php7.4-fpm php7.4-gd php7.4-gmp php7.4-json php7.4-mbstring php7.4-mysql php7.4-snmp php7.4-xml php7.4-zip rrdtool snmp snmpd whois unzip python3-pymysql python3-dotenv python3-redis python3-setuptools python3-systemd python3-pip -y
 
 # Adding librenms user
 printf "\n***Adding librenms user***\n"
@@ -36,7 +35,7 @@ setfacl -R -m g::rwx /opt/librenms/rrd /opt/librenms/logs /opt/librenms/bootstra
 printf "\n***Installing PHP dependencies***\n"
 
 sudo -u librenms bash << EOF
-./scripts/composer_wrapper.php install --no-dev
+/opt/librenms/scripts/composer_wrapper.php install --no-dev
 sleep 10
 exit
 EOF
