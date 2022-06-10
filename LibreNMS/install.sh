@@ -5,6 +5,8 @@ if [ "$(whoami)" != "root" ]; then
         exit 255
 fi
 
+INSTALL_DIR=`pwd`
+
 # Initial Installations
 printf "\n***Initial Installations***\n"
 
@@ -113,6 +115,8 @@ done
 
 echo "Your web server will be available at $INET"
 sleep 10
+
+cp -f "${INSTALL_DIR}"/files/librenms.conf /etc/nginx/conf.d/librenms.conf
 
 sed -i "s/server_name.*/server_name ${INET}/g" /etc/nginx/conf.d/librenms.conf
 
