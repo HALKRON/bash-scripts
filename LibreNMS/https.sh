@@ -7,8 +7,8 @@ fi
 
 INSTALL_DIR=$(pwd)
 
-openssl req -x509 -nodes -days 365 -newkey rsa:4096 -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt
-openssl dhparam -out /etc/nginx/dhparam.pem 4096
+openssl req -x509 -nodes -days 365 -newkey rsa:1024 -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt
+openssl dhparam -out /etc/nginx/dhparam.pem 1024
 
 touch /etc/nginx/snippets/self-signed.conf
 touch /etc/nginx/snippets/ssl-params.conf
