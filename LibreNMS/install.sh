@@ -5,7 +5,7 @@ if [ "$(whoami)" != "root" ]; then
         exit 255
 fi
 
-INSTALL_DIR=`pwd`
+INSTALL_DIR=$(pwd)
 
 # Initial Installations
 printf "\n***Initial Installations***\n"
@@ -97,7 +97,7 @@ printf "\n***Configuring Web Server***\n"
 
 echo ""
 
-INET=$((ip a || ifconfig) | grep inet | grep -n inet)
+INET=$( (ip a || ifconfig) | grep inet | grep -n inet )
 
 echo "$INET"
 
@@ -106,10 +106,10 @@ echo ""
 while true; do
     read -p "Choose the network interface you want the webserver to open: " -r LINE_NUMBER
     if [[ $LINE_NUMBER -ge $(echo "$INET" | head -n 1 | awk -F: '{print $1}') && $LINE_NUMBER -le $(echo "$INET" | tail -n 1 | awk -F: '{print $1}') ]] ; then
-        INET=$(echo "$INET" | grep ^$LINE_NUMBER |  awk '{print $3}' | awk -F/ '{print $1}')
+        INET=$(echo "$INET" | grep ^"$LINE_NUMBER" |  awk '{print $3}' | awk -F/ '{print $1}')
             break
     else
-        printf "\nPlease choose between $(echo "$INET" | head -n 1 | awk -F: '{print $1}') - $(echo "$INET" | tail -n 1 | awk -F: '{print $1}')\n$INET\n"
+        printf "\nPlease choose between $(echo %s | head -n 1 | awk -F: '{print $1}') - $(echo %s | tail -n 1 | awk -F: '{print $1}')\n%s\n" "$INET"
     fi
 done
 
@@ -132,7 +132,7 @@ printf "\n***Configuring SNMP***\n"
 
 cp -f /opt/librenms/snmpd.conf.example /etc/snmp/snmpd.conf
 
-read -p "Enter your community string: " -r YOUR_SNMP_COMMUNTIY
+read -p "Enter your community string: " -r YOUR_SNMP_COMMUNITY
 
 sed -i "s/RANDOMSTRINGGOESHERE/${YOUR_SNMP_COMMUNITY}/g" /etc/snmp/snmpd.conf
 
