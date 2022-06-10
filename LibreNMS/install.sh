@@ -90,7 +90,7 @@ sed -i "s/\[www\]/\[librenms\]/g" /etc/php/7.4/fpm/pool.d/librenms.conf
 sed -i "s/^user.*/user = librenms/g" /etc/php/7.4/fpm/pool.d/librenms.conf
 sed -i "s/^group.*/group = librenms/g" /etc/php/7.4/fpm/pool.d/librenms.conf
 
-sed -i "s/^listen.*/listen = /run/php-fpm-librenms.sock/g" /etc/php/7.4/fpm/pool.d/librenms.conf
+sed -i "s/^listen.*/listen = \/run\/php-fpm-librenms.sock/g" /etc/php/7.4/fpm/pool.d/librenms.conf
 
 # Configuring Web Server
 printf "\n***Configuring Web Server***\n"
