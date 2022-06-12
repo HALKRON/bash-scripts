@@ -1,0 +1,11 @@
+source:
+  default: http
+  debug: false
+  http:
+    url: https://LIBRE_NMS/api/v0/oxidized
+    map:
+      name: hostname
+      model: os
+      group: group
+    headers:
+      X-Auth-Token: 'LIBRE_TOKEN'
