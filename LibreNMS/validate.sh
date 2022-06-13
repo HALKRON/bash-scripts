@@ -5,11 +5,8 @@ if [ "$(whoami)" != "root" ]; then
         exit 255
 fi
 
-mysql -u root <<MYSQL_INPUT
-USE librenms;
-ALTER TABLE notifications CHANGE datetime datetime timestamp NOT NULL DEFAULT '1970-01-02 00:00:00';
-ALTER TABLE users CHANGE created_at created_at timestamp NOT NULL DEFAULT '1970-01-02 00:00:01';
-exit
-MYSQL_INPUT
+INSTALL_DIR=$(pwd)
+
+mysql -u root librenms < "${INSTALL_DIR}"/files/alt_datetime.sql
 
 cp -f /opt/librenms/misc/librenms.logrotate /etc/logrotate.d/librenms
