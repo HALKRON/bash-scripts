@@ -15,7 +15,7 @@ apt update && apt full-upgrade -y
 apt install software-properties-common
 add-apt-repository universe
 apt update
-apt install acl curl composer fping git graphviz imagemagick mariadb-client mariadb-server mtr-tiny nginx-full nmap php7.4-cli php7.4-curl php7.4-fpm php7.4-gd php7.4-gmp php7.4-json php7.4-mbstring php7.4-mysql php7.4-snmp php7.4-xml php7.4-zip rrdtool snmp snmpd whois unzip python3-pymysql python3-dotenv python3-redis python3-setuptools python3-systemd python3-pip -y
+apt install tzdata acl curl composer fping git graphviz imagemagick mariadb-client mariadb-server mtr-tiny nginx-full nmap php7.4-cli php7.4-curl php7.4-fpm php7.4-gd php7.4-gmp php7.4-json php7.4-mbstring php7.4-mysql php7.4-snmp php7.4-xml php7.4-zip rrdtool snmp snmpd whois unzip python3-pymysql python3-dotenv python3-redis python3-setuptools python3-systemd python3-pip -y
 
 # Adding librenms user
 printf "\n***Adding librenms user***\n"
@@ -42,6 +42,24 @@ sleep 10
 exit
 EOF
 
+# Configuring MariaDB
+printf "\n***Configuring MariaDB***\n"
+
+sed -i "s/\[mysqld\]/\[mysqld\]\ninnodb_file_per_table=1\nlower_case_table_names=0/g" /etc/mysql/mariadb.conf.d/50-server.cnf
+
+systemctl enable mariadb
+systemctl restart mariadb
+
+read -p "Enter you database password: " -r DB_PASSWORD
+
+mysql -u root << MYSQL_INPUT
+CREATE DATABASE librenms CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'librenms'@'localhost' IDENTIFIED BY "${DB_PASSWORD}";
+GRANT ALL PRIVILEGES ON librenms.* TO 'librenms'@'localhost';
+FLUSH PRIVILEGES;
+exit
+MYSQL_INPUT
+
 # Configuring Timezone
 printf "\n***Configuring Timzone***\n"
 
@@ -60,34 +78,10 @@ else
     sed -i "s/date.timezone.*/date.timezone = ${REGION}\/${TIMEZONE}/g" /etc/php/7.4/cli/php.ini
 fi
 
-if ! grep '\[mariadb\]' /etc/mysql/my.cnf ; then
-    cat << EOF >> /etc/mysql/my.cnf
-    [mariadb]
-    default_time_zone = '$REGION/$TIMEZONE'
-EOF
-else
-    sed -i "s/\[mariadb\]/\[mariadb\]\ndefault_time_zone = '$REGION/$TIMEZONE'/g" /etc/mysql/my.cnf
-fi
+mysql_tzinfo_to_sql /usr/share/zoneinfo/ | sudo mysql -u root mysql
+mysql -u root -e "SET GLOBAL timezone='${REGION}/${TIMEZONE}';"
 
 timedatectl set-timezone "${REGION}"/"${TIMEZONE}"
-
-# Configuring MariaDB
-printf "\n***Configuring MariaDB***\n"
-
-sed -i "s/\[mysqld\]/\[mysqld\]\ninnodb_file_per_table=1\nlower_case_table_names=0/g" /etc/mysql/mariadb.conf.d/50-server.cnf
-
-systemctl enable mariadb
-systemctl restart mariadb
-
-read -p "Enter you database password: " -r DB_PASSWORD
-
-mysql -u root << MYSQL_INPUT
-CREATE DATABASE librenms CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-CREATE USER 'librenms'@'localhost' IDENTIFIED BY "${DB_PASSWORD}";
-GRANT ALL PRIVILEGES ON librenms.* TO 'librenms'@'localhost';
-FLUSH PRIVILEGES;
-exit
-MYSQL_INPUT
 
 # Configuring PHP
 printf "\n***Configuring PHP***\n"
