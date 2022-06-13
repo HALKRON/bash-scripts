@@ -67,21 +67,21 @@ read -p "Enter your Region (eg. Asia, America, Africa): " -r REGION
 read -p "Enter your Timezone (eg. London, Yangon, New_York): " -r TIMEZONE
 
 if ! grep ^date.timezone /etc/php/7.4/fpm/php.ini ; then
-    sed -i "s/\[Date\]/\[Date\]\ndate.timezone = ${REGION}\/${TIMEZONE}/g" /etc/php/7.4/fpm/php.ini
+    sed -i "s/\[Date\]/\[Date\]\ndate.timezone = \"${REGION}\/${TIMEZONE}\"/g" /etc/php/7.4/fpm/php.ini
 else
-    sed -i "s/date.timezone.*/date.timezone = ${REGION}\/${TIMEZONE}/g" /etc/php/7.4/fpm/php.ini
+    sed -i "s/date.timezone.*/date.timezone = \"${REGION}\/${TIMEZONE}\"/g" /etc/php/7.4/fpm/php.ini
 fi
 
 if ! grep ^date.timezone /etc/php/7.4/cli/php.ini ; then
-    sed -i "s/\[Date\]/\[Date\]\ndate.timezone = ${REGION}\/${TIMEZONE}/g" /etc/php/7.4/cli/php.ini
+    sed -i "s/\[Date\]/\[Date\]\ndate.timezone = \"${REGION}\/${TIMEZONE}\"/g" /etc/php/7.4/cli/php.ini
 else
-    sed -i "s/date.timezone.*/date.timezone = ${REGION}\/${TIMEZONE}/g" /etc/php/7.4/cli/php.ini
+    sed -i "s/date.timezone.*/date.timezone = \"${REGION}\/${TIMEZONE}\"/g" /etc/php/7.4/cli/php.ini
 fi
+
+timedatectl set-timezone "${REGION}"/"${TIMEZONE}"
 
 mysql_tzinfo_to_sql /usr/share/zoneinfo/ | sudo mysql -u root mysql
 mysql -u root -e "SET GLOBAL time_zone='${REGION}/${TIMEZONE}';"
-
-timedatectl set-timezone "${REGION}"/"${TIMEZONE}"
 
 systemctl restart mariadb
 
@@ -118,7 +118,7 @@ sleep 10
 
 cp -f "${INSTALL_DIR}"/files/librenms.conf /etc/nginx/conf.d/librenms.conf
 
-sed -i "s/SERVER_IP/${INET};/g" /etc/nginx/conf.d/librenms.conf
+sed -i "s/SERVER_IP/${INET}/g" /etc/nginx/conf.d/librenms.conf
 
 rm /etc/nginx/sites-enabled/default
 systemctl restart nginx
