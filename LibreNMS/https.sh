@@ -13,10 +13,10 @@ openssl dhparam -out /etc/nginx/dhparam.pem 2048
 touch /etc/nginx/snippets/self-signed.conf
 touch /etc/nginx/snippets/ssl-params.conf
 
-cat <<EOT >> /etc/nginx/snippets/self-signed.conf
+cat << EOF >> /etc/nginx/snippets/self-signed.conf
 ssl_certificate /etc/ssl/certs/nginx-selfsigned.crt;
 ssl_certificate_key /etc/ssl/private/nginx-selfsigned.key;
-EOT
+EOF
 
 SERVER_IP=$(grep server_name /etc/nginx/conf.d/librenms.conf | sed "s/.*server_name\s*//g; s/;//g")
 

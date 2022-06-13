@@ -60,6 +60,15 @@ else
     sed -i "s/date.timezone.*/date.timezone = ${REGION}\/${TIMEZONE}/g" /etc/php/7.4/cli/php.ini
 fi
 
+if ! grep '\[mariadb\]' /etc/mysql/my.cnf ; then
+    cat << EOF >> /etc/mysql/my.cnf
+    [mariadb]
+    default_time_zone = '$REGION/$TIMEZONE'
+EOF
+else
+    sed -i "s/\[mariadb\]/\[mariadb\]\ndefault_time_zone = '$REGION/$TIMEZONE'/g" /etc/mysql/my.cnf
+fi
+
 timedatectl set-timezone "${REGION}"/"${TIMEZONE}"
 
 # Configuring MariaDB
@@ -72,7 +81,7 @@ systemctl restart mariadb
 
 read -p "Enter you database password: " -r DB_PASSWORD
 
-mysql -u root <<MYSQL_INPUT
+mysql -u root << MYSQL_INPUT
 CREATE DATABASE librenms CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 CREATE USER 'librenms'@'localhost' IDENTIFIED BY "${DB_PASSWORD}";
 GRANT ALL PRIVILEGES ON librenms.* TO 'librenms'@'localhost';
@@ -118,7 +127,7 @@ sleep 10
 
 cp -f "${INSTALL_DIR}"/files/librenms.conf /etc/nginx/conf.d/librenms.conf
 
-sed -i "s/server_name.*/server_name ${INET};/g" /etc/nginx/conf.d/librenms.conf
+sed -i "s/SERVER_IP/${INET};/g" /etc/nginx/conf.d/librenms.conf
 
 rm /etc/nginx/sites-enabled/default
 systemctl restart nginx
