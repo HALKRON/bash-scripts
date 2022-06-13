@@ -12,15 +12,15 @@ apt install ruby ruby-dev libsqlite3-dev libssl-dev pkg-config cmake libssh2-1-d
 gem install oxidized
 gem install oxidized-script oxidized-web
 
-useradd -s /bin/bash -m oxidized
+useradd -s /bin/bash -m -d /opt/oxidized oxidized
 
 read -p "Enter LibreNMS Server Address: " -r LIBRE_NMS
 read -p "Enter LibreNMS Token: " -r LIBRE_TOKEN
 
 sudo -u librenms bash << EOF
 oxidized
+#Copy from files to config
 
-sed -i "s/LIBRE_NMS/$LIBRE_NMS/g; s/LIBRE_TOKEN/$LIBRE_TOKEN/g" $HOME/.config/oxidized/config
 EOF
 
 

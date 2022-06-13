@@ -79,21 +79,18 @@ else
 fi
 
 mysql_tzinfo_to_sql /usr/share/zoneinfo/ | sudo mysql -u root mysql
-mysql -u root -e "SET GLOBAL timezone='${REGION}/${TIMEZONE}';"
+mysql -u root -e "SET GLOBAL time_zone='${REGION}/${TIMEZONE}';"
 
 timedatectl set-timezone "${REGION}"/"${TIMEZONE}"
+
+systemctl restart mariadb
 
 # Configuring PHP
 printf "\n***Configuring PHP***\n"
 
 cp -f /etc/php/7.4/fpm/pool.d/www.conf /etc/php/7.4/fpm/pool.d/librenms.conf
 
-sed -i "s/\[www\]/\[librenms\]/g" /etc/php/7.4/fpm/pool.d/librenms.conf
-
-sed -i "s/^user.*/user = librenms/g" /etc/php/7.4/fpm/pool.d/librenms.conf
-sed -i "s/^group.*/group = librenms/g" /etc/php/7.4/fpm/pool.d/librenms.conf
-
-sed -i "s/^listen = .*/listen = \/run\/php-fpm-librenms.sock/g" /etc/php/7.4/fpm/pool.d/librenms.conf
+sed -i "s/\[www\]/\[librenms\]/g; s/^user.*/user = librenms/g; s/^group.*/group = librenms/g; s/^listen = .*/listen = \/run\/php-fpm-librenms.sock/g" /etc/php/7.4/fpm/pool.d/librenms.conf
 
 # Configuring Web Server
 printf "\n***Configuring Web Server***\n"
