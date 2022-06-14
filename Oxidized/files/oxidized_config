@@ -1,9 +1,13 @@
 ---
-username: username
-password: password
+username: USER
+password: PASS
+
 model: junos
-resolve_dns: false
-interval: 3600
+
+log: ~/.config/oxidized/log
+
+resolve_dns: true
+interval: 60
 use_syslog: false
 debug: false
 threads: 30
@@ -15,12 +19,15 @@ next_adds_job: false
 vars: {}
 groups: {}
 models: {}
-pid: "/root/.config/oxidized/pid"
+pid: "/opt/oxidized/.config/oxidized/pid"
+
 crash:
-  directory: "/root/.config/oxidized/crashes"
+  directory: "/opt/oxidized/.config/oxidized/crashes"
   hostnames: false
+
 stats:
   history_size: 10
+
 input:
   default: ssh, telnet
   debug: false
@@ -29,24 +36,29 @@ input:
   ftp:
     passive: true
   utf8_encoded: true
+
 output:
-  default: file
-  file:
-    directory: "/root/.config/oxidized/configs"
+  default: git
+  git:
+    user: oxidized
+    email: o@example.com
+    repo: "/opt/oxidized/.config/oxidized/git-repos/default.git"
+
 source:
   default: http
   debug: false
   http:
+    secure: false
     url: http://LIBRE_NMS/api/v0/oxidized
     map:
       name: hostname
       model: os
       group: group
     headers:
-      X-Auth-Token: 'LIBRE_TOKEN'
+      X-Auth-Token: LIBRE_TOKEN
+
 groups:
-  defaultgrp:
-    username: default
-    password: default
-
-
+  cisco:
+    username: oxidized
+    password: pass
+# Change User group pass
