@@ -5,6 +5,9 @@ if [ "$(whoami)" != "root" ]; then
         exit 255
 fi
 
+read -p "Enter LibreNMS Server Address: " -r LIBRE_NMS
+read -p "Enter LibreNMS Token: " -r LIBRE_TOKEN
+
 INSTALL_DIR=$(pwd)
 
 add-apt-repository universe
@@ -16,15 +19,20 @@ gem install oxidized-script oxidized-web
 
 useradd -s /bin/bash -m -d /opt/oxidized oxidized
 
-read -p "Enter LibreNMS Server Address: " -r LIBRE_NMS
-read -p "Enter LibreNMS Token: " -r LIBRE_TOKEN
-
 #Copy from files to config
 
-sudo -u librenms bash << EOF
+sudo -u oxidized bash << EOF
 oxidized
-cp -f $INSTALL_DIR/files/oxidized_config $HOME/
+cp -f $INSTALL_DIR/files/oxidized_config /opt/oxidized/.config/oxidized/config
 EOF
 
-# add service
+# Add groups
+#lnms config:get oxidized.group.os.0.match
+#lnms config:get oxidized.group.os.0.group
 
+# Add service
+cp -f "$INSTALL_DIR"/files/oxidized.service /etc/systemd/system/
+
+systemctl daemon-reload
+systemctl enable oxidized.service
+systemctl restart oxidized.service
