@@ -5,10 +5,13 @@ if [ "$(whoami)" != "root" ]; then
         exit 255
 fi
 
-INSTALL_DIR=$(pwd)
+sudo apt install monitoring-plugins nagios-plugins-contrib
 
-LIBRENMS_HOME_DIR=/opt/librenms
+sudo -u librenms bash << EOF
+lnms config:set show_services 1
+lnms config:set nagios_plugins /usr/lib/nagios/plugins
+EOF
 
-read -p "Do you wish to change the LibreNMS Dir? ($LIBRENMS_HOME_DIR) " -r LIBRENMS_HOME_DIR
+chmod +x /usr/lib/nagios/plugins/*
 
-cat "$INSTALL_DIR"/files/nagios_config.php >> "$LIBRE_HOME_DIR"/config.php
+echo "*/5 * * * * librenms /opt/librenms/services-wrapper.py 1" | sudo tee --append /etc/cron.d/librenms
