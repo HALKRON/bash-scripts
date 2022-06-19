@@ -7,6 +7,8 @@ fi
 
 INSTALL_DIR=$(pwd)
 
+read -p "Enter your DNS servers with space between them: " -r DNS_SERVERS
+
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt
 openssl dhparam -out /etc/nginx/dhparam.pem 2048
 
@@ -20,12 +22,12 @@ EOF
 
 SERVER_IP=$(grep server_name /etc/nginx/conf.d/librenms.conf | sed "s/.*server_name\s*//g; s/;//g")
 
-read -p "Enter your DNS servers with space between them: " -r DNS_SERVERS
-
 cp -f "${INSTALL_DIR}"/files/ssl-params.conf /etc/nginx/snippets/ssl-params.conf
 cp -f "${INSTALL_DIR}"/files/librenms_https.conf /etc/nginx/conf.d/librenms.conf
 
 sed -i "s/SERVER_IP/${SERVER_IP}/g" /etc/nginx/conf.d/librenms.conf
 sed -i "s/DNS/${DNS_SERVERS}/g" /etc/nginx/snippets/ssl-params.conf
+
+su - librenms -c "lnms config:set base_url https://$SERVER_IP/"
 
 systemctl restart nginx

@@ -7,6 +7,26 @@ fi
 
 INSTALL_DIR=$(pwd)
 
+read -p "Enter you database password: " -r DB_PASSWORD
+read -p "Enter your Region (eg. Asia, America, Africa): " -r REGION
+read -p "Enter your Timezone (eg. London, Yangon, New_York): " -r TIMEZONE
+
+echo ""
+
+INET=$( (ip a || ifconfig) | grep inet | grep -n inet )
+
+printf "\n%s\n\n" "$INET"
+
+while true; do
+    read -p "Choose the network interface you want the webserver to open: " -r LINE_NUMBER
+    if [[ $LINE_NUMBER -ge $(echo "$INET" | head -n 1 | awk -F: '{print $1}') && $LINE_NUMBER -le $(echo "$INET" | tail -n 1 | awk -F: '{print $1}') ]] ; then
+        INET=$(echo "$INET" | grep ^"$LINE_NUMBER" |  awk '{print $3}' | awk -F/ '{print $1}')
+            break
+    else
+        printf "\nPlease choose between $(echo %s | head -n 1 | awk -F: '{print $1}') - $(echo %s | tail -n 1 | awk -F: '{print $1}')\n%s\n" "$INET"
+    fi
+done
+
 # Initial Installations
 printf "\n***Initial Installations***\n"
 
@@ -50,8 +70,6 @@ sed -i "s/\[mysqld\]/\[mysqld\]\ninnodb_file_per_table=1\nlower_case_table_names
 systemctl enable mariadb
 systemctl restart mariadb
 
-read -p "Enter you database password: " -r DB_PASSWORD
-
 mysql -u root << MYSQL_INPUT
 CREATE DATABASE librenms CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 CREATE USER 'librenms'@'localhost' IDENTIFIED BY "${DB_PASSWORD}";
@@ -62,9 +80,6 @@ MYSQL_INPUT
 
 # Configuring Timezone
 printf "\n***Configuring Timzone***\n"
-
-read -p "Enter your Region (eg. Asia, America, Africa): " -r REGION
-read -p "Enter your Timezone (eg. London, Yangon, New_York): " -r TIMEZONE
 
 if ! grep ^date.timezone /etc/php/7.4/fpm/php.ini ; then
     sed -i "s/\[Date\]/\[Date\]\ndate.timezone = \"${REGION}\/${TIMEZONE}\"/g" /etc/php/7.4/fpm/php.ini
@@ -94,24 +109,6 @@ sed -i "s/\[www\]/\[librenms\]/g; s/^user.*/user = librenms/g; s/^group.*/group 
 
 # Configuring Web Server
 printf "\n***Configuring Web Server***\n"
-
-echo ""
-
-INET=$( (ip a || ifconfig) | grep inet | grep -n inet )
-
-echo "$INET"
-
-echo ""
-
-while true; do
-    read -p "Choose the network interface you want the webserver to open: " -r LINE_NUMBER
-    if [[ $LINE_NUMBER -ge $(echo "$INET" | head -n 1 | awk -F: '{print $1}') && $LINE_NUMBER -le $(echo "$INET" | tail -n 1 | awk -F: '{print $1}') ]] ; then
-        INET=$(echo "$INET" | grep ^"$LINE_NUMBER" |  awk '{print $3}' | awk -F/ '{print $1}')
-            break
-    else
-        printf "\nPlease choose between $(echo %s | head -n 1 | awk -F: '{print $1}') - $(echo %s | tail -n 1 | awk -F: '{print $1}')\n%s\n" "$INET"
-    fi
-done
 
 echo "Your web server will be available at $INET"
 sleep 10
