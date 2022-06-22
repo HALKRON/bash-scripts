@@ -139,3 +139,9 @@ systemctl enable snmpd
 systemctl restart snmpd
 
 cp -f /opt/librenms/librenms.nonroot.cron /etc/cron.d/librenms
+
+sudo -u librenms bash << EOF
+cd /opt/librenms
+lnms config:set device_display_default '{{ $sysName_fallback }}'
+lnms config:set webui.dynamic_graphs true
+EOF
