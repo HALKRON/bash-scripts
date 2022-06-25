@@ -140,6 +140,14 @@ systemctl restart snmpd
 
 cp -f /opt/librenms/librenms.nonroot.cron /etc/cron.d/librenms
 
+# Configuring LibreNMS
+printf "\n***Configuring LibreNMS***\n"
+
+cp -f "${INSTALL_DIR}"/files/default.blade.php /opt/librenms/resources/views/alerts/templates/default.blade.php
+chown librenms:librenms /opt/librenms/resources/views/alerts/templates/default.blade.php
+
+sed -i "s/SERVER_IP/${INET}/g" /opt/librenms/resources/views/alerts/templates/default.blade.php
+
 sudo -u librenms bash << EOF
 cd /opt/librenms
 lnms config:set device_display_default '{{ $sysName_fallback }}'
