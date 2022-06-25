@@ -5,6 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+        .recovered {
+            color: green;
+        }
         .critical {
             color: red;
         }
@@ -34,6 +37,10 @@
 </head>
 <body>
     <div class="alert_title">
+        @if ($alert->state == 0)
+        <h1 class="recovered">RECOVERED</h1>
+        <h2 class="recovered">Time Taken: {{ $alert->elapsed }}</h2>
+        @endif
         @if ($alert->severity == critical)
         <h1 class="critical">CRITICAL</h1>
         <h2 class="critical">{{ $alert->name }}</h2>
@@ -42,6 +49,7 @@
         <h1 class="warning">WARNING</h1>
         <h2 class="warning">{{ $alert->name }}</h2>
         @endif
+        <h3><a href="http://SERVER_IP/device/{{ $alert->device_id }}">Go To Device</a></h3>
     </div>
     <div>
         <table class="tbl_info">
@@ -50,15 +58,15 @@
             </colgroup>
             <tr>
                 <td class="tbl_info">Display Name</td>
-                <td class="tbl_info">{{ $alert->display }}</td>
+                <td class="tbl_info">@if ($alert->display) {{ $alert->display }} @else {{ $alert->sysName }} @endif</td>
             </tr>
             <tr>
                 <td class="tbl_info">OS</td>
-                <td class="tbl_info">{{ $alert->os }}</td>
+                <td class="tbl_info" style="text-transform: capitalize;">{{ $alert->os }}</td>
             </tr>
             <tr>
-                <td class="tbl_info">Type</td>
-                <td class="tbl_info">{{ $alert->type }}</td>
+                <td class="tbl_info" >Type</td>
+                <td class="tbl_info" style="text-transform: capitalize;">{{ $alert->type }}</td>
             </tr>
             <tr>
                 <td class="tbl_info">IP Address / DNS</td>

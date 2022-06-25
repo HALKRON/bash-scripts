@@ -148,8 +148,13 @@ chown librenms:librenms /opt/librenms/resources/views/alerts/templates/default.b
 
 sed -i "s/SERVER_IP/${INET}/g" /opt/librenms/resources/views/alerts/templates/default.blade.php
 
+# Setting Devices to be display by sysName then IP if the former is not available
+# Setting Graphs to be requested without authentication for email graphs
+# Setting Discovery by IP so that non-domain devices can be added automatically
+
 sudo -u librenms bash << EOF
 cd /opt/librenms
 lnms config:set device_display_default '{{ $sysName_fallback }}'
-lnms config:set webui.dynamic_graphs true
+lnms config:set allow_unauth_graphs true
+lnms config:set discovery_by_ip true
 EOF
