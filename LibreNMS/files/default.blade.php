@@ -24,6 +24,11 @@
         .tbl_info {
             border: 2px #808080 solid;
         }
+        .tbl_header {
+            border: 2px rosybrown solid;
+            background-color: rosybrown;
+            color: white;
+        }
         table {
             width: 100%;
         }
@@ -65,7 +70,7 @@
                 <td class="tbl_info" style="text-transform: capitalize;">{{ $alert->os }}</td>
             </tr>
             <tr>
-                <td class="tbl_info" >Type</td>
+                <td class="tbl_info">Type</td>
                 <td class="tbl_info" style="text-transform: capitalize;">{{ $alert->type }}</td>
             </tr>
             <tr>

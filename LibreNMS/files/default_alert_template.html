@@ -1,6 +1,19 @@
 @extends('alerts.templates.default')
 
 @section('content')
-{{ $alert->name }}
+<table class="tbl_info" >
+    <tr>
+        <th class="tbl_header">Fault #</th>
+        <th class="tbl_header">Description</th>
+    </tr>
+    @if ($alert->state != 0)
+    @foreach ($alert->faults as $key => $value)
+    <tr>
+        <td class="tbl_info">{{ $key }}</td>
+        <td class="tbl_info">{{ $value['string'] }}</td>
+    </tr>
+    @endforeach
+    @endif
+</table>
 
 @endsection
