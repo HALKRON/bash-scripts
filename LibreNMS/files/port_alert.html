@@ -1,0 +1,26 @@
+@extends('alerts.templates.default')
+
+@section('content')
+@if ($alert->state != 0)
+<table class="tbl_info" >
+    <tr>
+        <th class="tbl_header">Fault #</th>
+        <th class="tbl_header">Port</th>
+        <th class="tbl_header">Port Name</th>
+        <th class="tbl_header">Port Status</th>
+        <th class="tbl_header">Description</th>
+    </tr>
+    
+    @foreach ($alert->faults as $key => $value)
+    @php($unit = __("sensors.${value["sensor_class"]}.unit"))
+    <tr>
+        <td class="tbl_info">{{ $key }}</td>
+        <td class="tbl_info">{{ $value['ifName'] }}</td>
+        <td class="tbl_info">{{ $value['ifAlias'] }}</td>
+        <td class="tbl_info">{{ $value['sensor_current'].$unit }}</td>
+        <td class="tbl_info">{{ $value['message'] }}</td>
+    </tr>
+    @endforeach
+</table>
+@endif
+@endsection
