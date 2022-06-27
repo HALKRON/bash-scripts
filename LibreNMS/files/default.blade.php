@@ -25,9 +25,9 @@
             border: 2px #808080 solid;
         }
         .tbl_header {
-            border: 2px rosybrown solid;
-            background-color: rosybrown;
-            color: white;
+            border: 2px #bc8f8f solid;
+            background-color: #bc8f8f;
+            color: #ffffff;
         }
         table {
             width: 100%;
@@ -36,7 +36,7 @@
             padding: 2px;
         }
         col {
-            background-color: azure;
+            background-color: #f0ffff;
         }
     </style>
 </head>

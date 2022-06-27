@@ -156,5 +156,7 @@ sudo -u librenms bash << EOF
 cd /opt/librenms
 lnms config:set device_display_default '{{ $sysName_fallback }}'
 lnms config:set allow_unauth_graphs true
+lnms config:set webui.graph_type png
+lnms config:set webui.dynamic_graphs
 lnms config:set discovery_by_ip true
 EOF
