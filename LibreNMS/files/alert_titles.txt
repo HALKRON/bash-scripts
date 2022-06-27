@@ -1,0 +1,6 @@
+Paste these lines in Alert title and Recovery title
+{{ strtoupper($alert->severity) }}: {{ ucfirst($alert->type) }} - @if ($alert->display) {{ $alert->display }} @else {{ $alert->sysName }} @endif - {{ $alert->name }}
+Example: CRITICAL: Server - Access-Switch-01 - Device rebooted
+
+RECOVERED: {{ ucfirst($alert->type) }} - @if ($alert->display) {{ $alert->display }} @else {{ $alert->sysName }} @endif - {{ $alert->name }}
+Example: RECOVERED: Server - Access-Switch-01 - Device rebooted
