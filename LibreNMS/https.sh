@@ -27,6 +27,7 @@ cp -f "${INSTALL_DIR}"/files/librenms_https.conf /etc/nginx/conf.d/librenms.conf
 
 sed -i "s/SERVER_IP/${SERVER_IP}/g" /etc/nginx/conf.d/librenms.conf
 sed -i "s/DNS/${DNS_SERVERS}/g" /etc/nginx/snippets/ssl-params.conf
+sed -i "s/href=\"http/href=\"https/g" /opt/librenms/resources/views/alerts/templates/default.blade.php
 
 su - librenms -c "lnms config:set base_url https://$SERVER_IP/"
 
