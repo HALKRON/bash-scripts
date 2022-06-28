@@ -1,6 +1,6 @@
 ---
-username: USER
-password: PASS
+username: USERNAME
+password: PASSWORD
 
 model: junos
 
@@ -9,6 +9,7 @@ log: ~/.config/oxidized/log
 resolve_dns: true
 interval: 60
 use_syslog: false
+next_adds_job: true
 debug: false
 threads: 30
 timeout: 20
@@ -41,7 +42,7 @@ output:
   default: git
   git:
     user: oxidized
-    email: o@example.com
+    email: EMAIL
     repo: "/opt/oxidized/.config/oxidized/git-repos/default.git"
 
 source:
@@ -56,9 +57,3 @@ source:
       group: group
     headers:
       X-Auth-Token: LIBRE_TOKEN
-
-groups:
-  cisco:
-    username: oxidized
-    password: pass
-# Change User group pass

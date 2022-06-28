@@ -5,10 +5,28 @@ if [ "$(whoami)" != "root" ]; then
         exit 255
 fi
 
-read -p "Enter LibreNMS Server Address: " -r LIBRE_NMS
+read -p "Enter LibreNMS Server Address: " -r LIBRE_NMS 
+
+while true; do
+    read -p "Is your server SSL encrypted?[Yes/No] " -r HTTPS
+    if [[ $HTTPS =~ ^[Yy]es$ ]] ; then
+        HTTPS=true
+        break
+    elif [[ $HTTPS =~ ^[nN]o$ ]] ; then
+        HTTPS=false
+        break
+    else
+        echo "Yes or No only!"
+    fi
+done
+
+read -p "Enter Oxidized Username: " -r USERNAME
+read -p "Enter Oxidized Password: " -r PASSWORD
+read -p "Enter Git Email: " -r EMAIL
 read -p "Enter LibreNMS Token: " -r LIBRE_TOKEN
 
 INSTALL_DIR=$(pwd)
+OXIDIZED_CONF=/opt/oxidized/.config/oxidized/config
 
 add-apt-repository universe
 apt update && apt full-upgrade -y
@@ -23,12 +41,20 @@ useradd -s /bin/bash -m -d /opt/oxidized oxidized
 
 sudo -u oxidized bash << EOF
 oxidized
-cp -f $INSTALL_DIR/files/oxidized_config /opt/oxidized/.config/oxidized/config
 EOF
 
-# Add groups
-#lnms config:get oxidized.group.os.0.match
-#lnms config:get oxidized.group.os.0.group
+cp -f "$INSTALL_DIR"/files/oxidized_config $OXIDIZED_CONF
+chown oxidized:oxidized $OXIDIZED_CONF
+
+sed -i "s/USERNAME/$USERNAME/g" "$OXIDIZED_DIR"
+sed -i "s/USERNAME/$PASSWORD/g" "$OXIDIZED_DIR"
+sed -i "s/USERNAME/$EMAIL/g" "$OXIDIZED_DIR"
+sed -i "s/USERNAME/$LIBRE_TOKEN/g" "$OXIDIZED_DIR"
+sed -i "s/USERNAME/$LIBRE_NMS/g" "$OXIDIZED_DIR"
+
+if [[ $HTTPS == true ]] ; then
+        sed -i "s/url: http/url: https/g" $OXIDIZED_CONF
+fi
 
 # Add service
 cp -f "$INSTALL_DIR"/files/oxidized.service /etc/systemd/system/
