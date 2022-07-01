@@ -29,6 +29,14 @@
             background-color: #bc8f8f;
             color: #ffffff;
         }
+        .btn_dev {
+            background-color: #bc8f8f;
+            font-size: medium;
+            font-weight: bold;
+            color: white;
+            border: 4px solid #bc8f8f;
+            padding: 10px 24px;
+        }
         table {
             width: 100%;
         }
@@ -36,7 +44,7 @@
             padding: 2px;
         }
         col {
-            background-color: #f0ffff;
+            background-color: #d8bdbd;
         }
     </style>
 </head>
@@ -54,7 +62,7 @@
         <h1 class="warning">WARNING</h1>
         <h2 class="warning">{{ $alert->name }}</h2>
         @endif
-        <h3><a href="http://SERVER_IP/device/{{ $alert->device_id }}">Go To Device</a></h3>
+        <h3><a href="http://SERVER_IP/device/{{ $alert->device_id }}"><button class="btn_dev" type="button">Go To Device</button></a></h3>
     </div>
     <div>
         <table class="tbl_info">
@@ -86,13 +94,13 @@
                 <td class="tbl_info">{{ $alert->timestamp }}</td>
             </tr>
             <tr>
-                <td class="tbl_info" colspan="2"><img class="graphs" src="http://SERVER_IP/graph.php?type=device_processor&from=end-72h&legend=yes&lazy_w=804&device={{ $alert->device_id }}&height=300&width=800" alt="Device Processor" title="Device Processor"></td>
+                <td class="tbl_info" colspan="2"><img class="graphs" src="http://SERVER_IP/graph.php?type=device_processor&from=end-72h&legend=no&lazy_w=804&device={{ $alert->device_id }}&height=300&width=800" alt="Device Processor" title="Device Processor"></td>
             </tr>
             <tr>
-                <td class="tbl_info" colspan="2"><img class="graphs" src="http://SERVER_IP/graph.php?type=device_mempool&from=end-72h&legend=yes&lazy_w=804&device={{ $alert->device_id }}&height=300&width=800" alt="Device Memory" title="Device Memory"></td>
+                <td class="tbl_info" colspan="2"><img class="graphs" src="http://SERVER_IP/graph.php?type=device_mempool&from=end-72h&legend=no&lazy_w=804&device={{ $alert->device_id }}&height=300&width=800" alt="Device Memory" title="Device Memory"></td>
             </tr>
             <tr>
-                <td class="tbl_info" colspan="2"><img class="graphs" src="http://SERVER_IP/graph.php?type=device_bits&from=end-72h&legend=yes&lazy_w=804&device={{ $alert->device_id }}&height=300&width=800" alt="Device Traffic" title="Device Traffic"></td>
+                <td class="tbl_info" colspan="2"><img class="graphs" src="http://SERVER_IP/graph.php?type=device_bits&from=end-72h&legend=no&lazy_w=804&device={{ $alert->device_id }}&height=300&width=800" alt="Device Traffic" title="Device Traffic"></td>
             </tr>
         </table>
         <br>
