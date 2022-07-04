@@ -8,7 +8,7 @@ fi
 read -p "Enter LibreNMS Server Address: " -r LIBRE_NMS 
 
 while true; do
-    read -p "Is your server SSL encrypted?[Yes/No] " -r HTTPS
+    read -p "Is your server SSL encrypted? [Yes/No] " -r HTTPS
     if [[ $HTTPS =~ ^[Yy]es$ ]] ; then
         HTTPS=true
         break
@@ -46,11 +46,11 @@ EOF
 cp -f "$INSTALL_DIR"/files/oxidized_config $OXIDIZED_CONF
 chown oxidized:oxidized $OXIDIZED_CONF
 
-sed -i "s/USERNAME/$USERNAME/g" "$OXIDIZED_DIR"
-sed -i "s/USERNAME/$PASSWORD/g" "$OXIDIZED_DIR"
-sed -i "s/USERNAME/$EMAIL/g" "$OXIDIZED_DIR"
-sed -i "s/USERNAME/$LIBRE_TOKEN/g" "$OXIDIZED_DIR"
-sed -i "s/USERNAME/$LIBRE_NMS/g" "$OXIDIZED_DIR"
+sed -i "s/USERNAME/$USERNAME/g" "$OXIDIZED_CONF"
+sed -i "s/PASSWORD/$PASSWORD/g" "$OXIDIZED_CONF"
+sed -i "s/EMAIL/$EMAIL/g" "$OXIDIZED_CONF"
+sed -i "s/LIBRE_TOKEN/$LIBRE_TOKEN/g" "$OXIDIZED_CONF"
+sed -i "s/LIBRE_NMS/$LIBRE_NMS/g" "$OXIDIZED_CONF"
 
 if [[ $HTTPS == true ]] ; then
         sed -i "s/url: http/url: https/g" $OXIDIZED_CONF
