@@ -10,6 +10,7 @@ INSTALL_DIR=$(pwd)
 read -p "Enter you database password: " -r DB_PASSWORD
 read -p "Enter your Region (eg. Asia, America, Africa): " -r REGION
 read -p "Enter your Timezone (eg. London, Yangon, New_York): " -r TIMEZONE
+read -p "Enter your community string for localhost: " -r YOUR_SNMP_COMMUNITY
 
 echo ""
 
@@ -129,7 +130,6 @@ printf "\n***Configuring SNMP***\n"
 
 cp -f /opt/librenms/snmpd.conf.example /etc/snmp/snmpd.conf
 
-read -p "Enter your community string: " -r YOUR_SNMP_COMMUNITY
 
 sed -i "s/RANDOMSTRINGGOESHERE/${YOUR_SNMP_COMMUNITY}/g" /etc/snmp/snmpd.conf
 
@@ -147,16 +147,3 @@ cp -f "${INSTALL_DIR}"/files/default.blade.php /opt/librenms/resources/views/ale
 chown librenms:librenms /opt/librenms/resources/views/alerts/templates/default.blade.php
 
 sed -i "s/SERVER_IP/${INET}/g" /opt/librenms/resources/views/alerts/templates/default.blade.php
-
-# Setting Devices to be display by sysName then IP if the former is not available
-# Setting Graphs to be requested without authentication for email graphs
-# Setting Discovery by IP so that non-domain devices can be added automatically
-
-sudo -u librenms bash << EOF
-cd /opt/librenms
-lnms config:set device_display_default '{{ $sysName_fallback }}'
-lnms config:set allow_unauth_graphs true
-lnms config:set webui.graph_type png
-lnms config:set webui.dynamic_graphs
-lnms config:set discovery_by_ip true
-EOF
