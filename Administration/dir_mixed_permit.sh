@@ -10,7 +10,7 @@ rm -r "$1"
 echo -e "\nCreating directories..."
 mkdir -p "$1"/apples "$1"/bananas "$1"/grapes
 
-echo -e "\nChange the directories permissions..."
+echo -e "\nChanging the directories permissions..."
 chmod -R 750 "$1"/"${DIR_NAMES[0]}"
 chmod -R 400 "$1"/"${DIR_NAMES[1]}"
 chmod -R 100 "$1"/"${DIR_NAMES[2]}"
@@ -24,6 +24,6 @@ for dir in "${DIR_NAMES[@]}"; do
   while IFS= read -r line
   do
     touch "$1"/"$dir"/"$line"
-  done < file_names.txt
+  done < "$0"/file_names.txt
 done
 
