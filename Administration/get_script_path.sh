@@ -1,3 +1,4 @@
 #!/bin/bash
 
-echo "${0//get_script_path.sh/}"
+DOT_REMOVED=$(echo "$0" | sed "s/^\.//g")
+echo "$(pwd)${DOT_REMOVED//get_script_path.sh/}"
