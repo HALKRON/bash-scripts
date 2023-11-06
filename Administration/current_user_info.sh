@@ -14,3 +14,5 @@ grep "$(whoami)" /etc/passwd
 echo -e "\nShowing the groups the user $(whoami) belongs to"
 grep "$(whoami)" /etc/group
 
+echo -e "\nChecking user's expiration details"
+chage -l "$(whoami)"
