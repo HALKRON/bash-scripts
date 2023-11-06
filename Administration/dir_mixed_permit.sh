@@ -1,6 +1,7 @@
 #!/bin/bash
 
 DIR_NAMES=("apples" "bananas" "grapes")
+SCRIPT_PATH="${0//dir_mixed_permit.sh/}"
 
 cd "$HOME" || exit
 
@@ -24,6 +25,6 @@ for dir in "${DIR_NAMES[@]}"; do
   while IFS= read -r line
   do
     touch "$1"/"$dir"/"$line"
-  done < "$0"/file_names.txt
+  done < "$SCRIPT_PATH"/file_names.txt
 done
 
