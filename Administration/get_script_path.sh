@@ -1,4 +1,7 @@
 #!/bin/bash
 
-DOT_REMOVED=$(echo "$0" | sed "s/^\.//g")
-echo "$(pwd)${DOT_REMOVED//get_script_path.sh/}"
+#unset DOT_REMOVED SCRIPT_PATH
+DOT_REMOVED=$(echo "$0" | sed "s/^\.//g; s/\/[[:alpha:]]*$//g")
+SCRIPT_PATH="$(pwd)${DOT_REMOVED}"
+
+echo "$SCRIPT_PATH"
