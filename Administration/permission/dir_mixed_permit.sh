@@ -19,7 +19,7 @@ for dir in "${DIR_NAMES[@]}"; do
   while IFS= read -r line
   do
     touch "$1"/"$dir"/"$line"
-  done < "${SCRIPT_PATH}/file_names.txt"
+  done < "${SCRIPT_PATH}/../file_names.txt"
 
 done
 
