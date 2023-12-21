@@ -16,6 +16,6 @@ mv /etc/dnsmasq.conf /etc/dnsmasq.conf.0
 
 cp ../files/dnsmasq.conf /etc/dnsmasq
 
-sed -i "s/ensXX/$INTERFACE/g" /etc/dnsmasq
+sed -i "s/ensXX/$INTERFACE/g" /etc/dnsmasq.conf
 
-systemctl enable --now dnsmasq.service || systemctl restart dnsmasq.service
+systemctl enable --now dnsmasq.service ; systemctl restart dnsmasq.service
